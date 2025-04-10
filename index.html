@@ -404,9 +404,43 @@
             transform: scale(1.1);
         }
         
+        /* Redes Sociais */
+        .social {
+            padding: 100px 0;
+            background-color: var(--secondary-color);
+        }
+        
+        .social-container {
+            text-align: center;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .social-icon {
+            width: 70px;
+            height: 70px;
+            background-color: var(--dark-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-10px) scale(1.1);
+            background-color: var(--primary-color);
+        }
+        
         /* Footer */
         footer {
-            background-color: var(--secondary-color);
+            background-color: var(--dark-color);
             padding: 30px 0;
             text-align: center;
         }
@@ -465,6 +499,53 @@
             .contact-container {
                 grid-template-columns: 1fr;
             }
+            
+            .social-icons {
+                flex-wrap: wrap;
+            }
+        }
+        
+        /* Menu mobile */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--light-color);
+            margin: 3px 0;
+            transition: 0.4s;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--dark-color);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 40px;
+                transition: 0.5s;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
         }
     </style>
 </head>
@@ -482,6 +563,11 @@
                     <li><a href="#gallery">Galeria</a></li>
                     <li><a href="#contact">Contato</a></li>
                 </ul>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </nav>
         </div>
     </header>
@@ -582,62 +668,19 @@
         </div>
     </section>
 
-    <!-- Seção Galeria -->
-    <section class="gallery" id="gallery">
+    <!-- Seção Redes Sociais -->
+    <section class="social" id="social">
         <div class="container">
-            <h2 class="section-title">Nossa Galeria</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?sports-car" alt="Carro esportivo" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-tuning" alt="Carro tunado" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-wheels" alt="Rodas especiais" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-interior" alt="Interior personalizado" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-engine" alt="Motor preparado" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-show" alt="Exposição de carros" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?car-detail" alt="Detalhes automotivos" class="gallery-img">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://source.unsplash.com/random/400x320/?racing-car" alt="Carro de corrida" class="gallery-img">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Seção Contato -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2 class="section-title">Entre em Contato</h2>
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h3>Informações de Contato</h3>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <span class="contact-icon">📍</span>
-                            <div>
-                                <p>Av. dos Automóveis, 1234</p>
-                                <p>São Paulo, SP - Brasil</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <span class="contact-icon">📱</span>
-                            <div>
-                                <p>+55 11 99999-8888</p>
-                                <p>+55 11 3333-4444</p>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <span class="contact-icon">✉️</s
+            <h2 class="section-title">Nossas Redes Sociais</h2>
+            <div class="social-container">
+                <p>Siga-nos nas redes sociais para ficar por dentro das novidades, bastidores e conteúdo exclusivo.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">
+                        <span>📱</span>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <span>📷</span>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <span>🎬</span>
+                    </a>
