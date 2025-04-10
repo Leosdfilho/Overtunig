@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVERTUNING - Personalização e Aprimoramento de Veículos</title>
+    <style>
+        /* Estilos Gerais */
+        :root {
+            --primary-color: #ff4d00;
+            --secondary-color: #222;
+            --light-color: #f5f5f5;
+            --dark-color: #111;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-color);
+            color: var(--light-color);
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--light-color);
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Barra de Navegação */
+        header {
+            background-color: rgba(17, 17, 17, 0.9);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .logo span {
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            position: relative;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            bottom: -5px;
+            left: 0;
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/800') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .hero span {
+            color: var(--primary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            background-color: #ff6a33;
+        }
+        
+        /* Seção Serviços */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .services {
+            padding: 100px 0;
+            background-color: var(--secondary-color);
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .service-card {
+            background-color: var(--dark-color);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .service-img {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .service-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .service-card:hover .service-img img {
+            transform: scale(1.1);
+        }
+        
+        .service-content {
+            padding: 25px;
+        }
+        
+        .service-content h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .service-content p {
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        .service-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Seção Projetos */
+        .projects {
+            padding: 100px 0;
+            background-color: var(--dark-color);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .project-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            height: 300px;
+        }
+        
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 77, 0, 0.8), rgba(34, 34, 34, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .project-item:hover .project-overlay {
+            opacity: 1;
+        }
+        
+        .project-item:hover .project-img {
+            transform: scale(1.1);
+        }
+        
+        .project-overlay h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .project-overlay p {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        /* Seção Contato */
+        .contact {
+            padding: 100px 0;
+            background-color: var(--secondary-color);
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+            background-color: #ff6a33;
+        }
+        
+        .contact-form form {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: 2px solid var(--primary-color);
+        }
+        
+        .form-control::placeholder {
+            color: #aaa;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        /* Galeria */
+        .gallery {
+            padding: 100px 0;
+            background-color: var(--dark-color);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+            height: 200px;
+            cursor: pointer;
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .footer-logo span {
+            color: var(--primary-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .footer-links li {
+            margin: 0 15px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header e Navegação -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">OVER<span>TUNING</span></a>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#videos">Vídeos</a></li>
+                    <li><a href="#social">Redes Sociais</a></li>
+                    <li><a href="#gallery">Galeria</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Bem-vindo ao canal <span>OVERTUNING</span></h1>
+                <p>O seu canal favorito sobre cultura automotiva, modificações e o universo dos carros customizados.</p>
+                <a href="#videos" class="btn">Assistir vídeos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Sobre -->
+    <section class="services" id="about">
+        <div class="container">
+            <h2 class="section-title">Sobre o Canal</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="/api/placeholder/400/320" alt="Review de carros">
+                    </div>
+                    <div class="service-content">
+                        <h3>Reviews Automotivos</h3>
+                        <p>Testes e avaliações dos carros mais incríveis e modificados do mundo automotivo, com análises detalhadas e opiniões sinceras.</p>
+                        <a href="#" class="service-link">Ver vídeos →</a>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="/api/placeholder/400/320" alt="Modificações e tuning">
+                    </div>
+                    <div class="service-content">
+                        <h3>Bastidores de Modificações</h3>
+                        <p>Acompanhe de perto as transformações e customizações mais impressionantes, desde o início até o resultado final.</p>
+                        <a href="#" class="service-link">Ver vídeos →</a>
+                    </div>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-img">
+                        <img src="/api/placeholder/400/320" alt="Cultura automotiva">
+                    </div>
+                    <div class="service-content">
+                        <h3>Cultura Automotiva</h3>
+                        <p>Conteúdo sobre eventos, encontros e tudo relacionado ao estilo de vida e a cultura de carros personalizados no Brasil e no mundo.</p>
+                        <a href="#" class="service-link">Ver vídeos →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Vídeos -->
+    <section class="projects" id="videos">
+        <div class="container">
+            <h2 class="section-title">Vídeos em Destaque</h2>
+            <div class="projects-grid">
+                <div class="project-item">
+                    <img src="/api/placeholder/400/320" alt="Vídeo 1" class="project-img">
+                    <div class="project-overlay">
+                        <h4>BMW M3 Rebaixado</h4>
+                        <p>Review completo da máquina alemã com preparação nacional e visual insano.</p>
+                        <a href="#" class="btn">Assistir</a>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <img src="/api/placeholder/400/320" alt="Vídeo 2" class="project-img">
+                    <div class="project-overlay">
+                        <h4>Audi RS6 Envelopado</h4>
+                        <p>Processo completo de transformação desta perua que é um verdadeiro foguete.</p>
+                        <a href="#" class="btn">Assistir</a>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <img src="/api/placeholder/400/320" alt="Vídeo 3" class="project-img">
+                    <div class="project-overlay">
+                        <h4>Encontro de Carros Rebaixados</h4>
+                        <p>Cobertura do maior evento de carros modificados do Brasil.</p>
+                        <a href="#" class="btn">Assistir</a>
+                    </div>
+                </div>
+                
+                <div class="project-item">
+                    <img src="/api/placeholder/400/320" alt="Vídeo 4" class="project-img">
+                    <div class="project-overlay">
+                        <h4>Ford Mustang com 800cv</h4>
+                        <p>Conheça essa fera americana com mais de 800 cavalos de potência
+
+    <!-- Seção Contato -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Entre em Contato</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Informações de Contato</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <span class="contact-icon">📍</span>
+                            <div>
+                                <p>Av. dos Automóveis, 1234</p>
+                                <p>São Paulo, SP - Brasil</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <span class="contact-icon">📱</span>
+                            <div>
+                                <p>+55 11 99999-8888</p>
+                                <p>+55 11 3333-4444</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <span class="contact-icon">✉️</span>
+                            <div>
+                                <p>contato@overtuning.com.br</p>
+                                <p>atendimento@overtuning.com.br</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>Redes Sociais</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">FB</a>
+                        <a href="#" class="social-link">IG</a>
+                        <a href="#" class="social-link">YT</a>
+                        <a href="#" class="social-link">TW</a>
+                        <a href="#" class="social-link">TT</a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Nome completo">
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="E-mail">
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="tel" class="form-control" placeholder="Telefone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Sua mensagem"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Galeria -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <h2 class="section-title">Galeria de Veículos</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/320" alt="Carro 1" class="gallery-img">
+                </div>
+                <div class="gallery-item">
+                    <img src="/api/placeholder/400/320" 
