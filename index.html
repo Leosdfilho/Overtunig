@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OVERTUNING - Personalização e Aprimoramento de Veículos</title>
+    <link rel="stylesheet" href="style.css">
 
             
 </head>
@@ -142,3 +143,434 @@
                     <a href="#" class="social-icon">
                         <span>🎬</span>
                     </a>
+// Configuração do Supabase
+document.addEventListener('DOMContentLoaded', function() {
+    // Substitua estas credenciais pelas suas credenciais reais do Supabase
+    const SUPABASE_URL = 'https://seu-projeto.supabase.co';
+    const SUPABASE_KEY = 'sua-chave-supabase-anon-public';
+    
+    // Inicialização do cliente Supabase
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    // Carregar produtos na inicialização
+    loadProducts();
+    
+    // Configuração do menu mobile
+    setupMobileMenu();
+    
+    // Configuração do formulário de contato
+    setupContactForm();
+    
+    /**
+     * Carrega os produtos do Supabase e os exibe no container de produtos
+     */
+    async function loadProducts() {
+        try {
+            // Carregar o container de produtos
+            const productsContainer = document.getElementById('products-container');
+            
+            // Mostrar um indicador de carregamento
+            productsContainer.innerHTML = '<div class="loading">Carregando produtos...</div>';
+            
+            // Buscar produtos do Supabase
+            const { data: products, error } = await supabase
+                .from('produtos')
+                .select('*')
+                .order('id', { ascending: true });
+                
+            if (error) throw error;
+            
+            // Limpar o container
+            productsContainer.innerHTML = '';
+            
+            // Verificar se há produtos
+            if (products.length === 0) {
+                productsContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                return;
+            }
+            
+            // Renderizar cada produto
+            products.forEach(product => {
+                const productCard = createProductCard(product);
+                productsContainer.appendChild(productCard);
+            });
+            
+        } catch (error) {
+            console.error('Erro ao carregar produtos:', error);
+            document.getElementById('products-container').innerHTML = 
+                '<p>Ocorreu um erro ao carregar os produtos. Por favor, tente novamente mais tarde.</p>';
+            showNotification('Erro ao carregar produtos', 'error');
+        }
+    }
+    
+    /**
+     * Cria um elemento de card de produto com base nos dados do produto
+     * @param {Object} product - Dados do produto
+     * @returns {HTMLElement} - Elemento DOM do card do produto
+     */
+    function createProductCard(product) {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        // Criar a imagem do produto
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'product-img';
+        
+        const img = document.createElement('img');
+        img.src = product.imagem_url || '/api/placeholder/400/320';
+        img.alt = product.nome;
+        imgContainer.appendChild(img);
+        
+        // Criar as informações do produto
+        const info = document.createElement('div');
+        info.className = 'product-info';
+        
+        const name = document.createElement('h3');
+        name.textContent = product.nome;
+        
+        const description = document.createElement('p');
+        description.textContent = product.descricao;
+        
+        const price = document.createElement('div');
+        price.className = 'product-price';
+        price.textContent = formatCurrency(product.preco);
+        
+        const actions = document.createElement('div');
+        actions.className = 'product-actions';
+        
+        const detailsBtn = document.createElement('a');
+        detailsBtn.href = '#';
+        detailsBtn.className = 'btn';
+        detailsBtn.textContent = 'Ver Detalhes';
+        detailsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showProductDetails(product);
+        });
+        
+        const buyBtn = document.createElement('a');
+        buyBtn.href = '#';
+        buyBtn.className = 'btn';
+        buyBtn.textContent = 'Comprar';
+        buyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addToCart(product);
+        });
+        
+        // Montar o card
+        actions.appendChild(detailsBtn);
+        actions.appendChild(buyBtn);
+        
+        info.appendChild(name);
+        info.appendChild(description);
+        info.appendChild(price);
+        info.appendChild(actions);
+        
+        card.appendChild(imgContainer);
+        card.appendChild(info);
+        
+        return card;
+    }
+    
+    /**
+     * Exibe detalhes do produto em um modal
+     * @param {Object} product - Dados do produto
+     */
+    function showProductDetails(product) {
+        // Criar o modal
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        
+        // Conteúdo do modal
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        
+        // Botão de fechar
+        const closeBtn = document.createElement('span');
+        closeBtn.className = 'close-modal';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.addEventListener('click', function() {
+            document.body.removeChild(modal);
+        });
+        
+        // Detalhes do produto
+        const title = document.createElement('h2');
+        title.textContent = product.nome;
+        
+        const img = document.createElement('img');
+        img.src = product.imagem_url || '/api/placeholder/400/320';
+        img.alt = product.nome;
+        img.style.width = '100%';
+        img.style.borderRadius = '8px';
+        img.style.marginBottom = '20px';
+        
+        const desc = document.createElement('p');
+        desc.textContent = product.descricao_longa || product.descricao;
+        
+        const specs = document.createElement('div');
+        specs.style.margin = '20px 0';
+        
+        // Especificações do produto (se disponíveis)
+        if (product.especificacoes) {
+            const specsList = document.createElement('ul');
+            specsList.style.listStyleType = 'none';
+            specsList.style.padding = '0';
+            
+            Object.entries(product.especificacoes).forEach(([key, value]) => {
+                const item = document.createElement('li');
+                item.style.margin = '10px 0';
+                item.style.padding = '10px';
+                item.style.backgroundColor = 'rgba(0,0,0,0.2)';
+                item.style.borderRadius = '5px';
+                item.textContent = `${key}: ${value}`;
+                specsList.appendChild(item);
+            });
+            
+            specs.appendChild(specsList);
+        }
+        
+        const price = document.createElement('div');
+        price.className = 'product-price';
+        price.textContent = formatCurrency(product.preco);
+        
+        const buyBtn = document.createElement('a');
+        buyBtn.href = '#';
+        buyBtn.className = 'btn';
+        buyBtn.textContent = 'Adicionar ao Carrinho';
+        buyBtn.style.display = 'inline-block';
+        buyBtn.style.marginTop = '20px';
+        buyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addToCart(product);
+            document.body.removeChild(modal);
+        });
+        
+        // Montar o modal
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(title);
+        modalContent.appendChild(img);
+        modalContent.appendChild(desc);
+        modalContent.appendChild(specs);
+        modalContent.appendChild(price);
+        modalContent.appendChild(buyBtn);
+        
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+        
+        // Fechar o modal ao clicar fora dele
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+    }
+    
+    /**
+     * Adiciona um produto ao carrinho
+     * @param {Object} product - Dados do produto
+     */
+    function addToCart(product) {
+        // Neste exemplo, apenas mostramos uma notificação
+        // Em uma implementação real, você adicionaria ao carrinho de compras
+        showNotification(`${product.nome} adicionado ao carrinho!`, 'success');
+        
+        // Aqui você poderia implementar a lógica para adicionar ao carrinho
+        // Por exemplo, salvar no localStorage ou enviar para o Supabase
+    }
+    
+    /**
+     * Exibe uma notificação na tela
+     * @param {string} message - Mensagem a ser exibida
+     * @param {string} type - Tipo de notificação ('success' ou 'error')
+     */
+    function showNotification(message, type = 'success') {
+        // Remover notificações anteriores
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => {
+            document.body.removeChild(notification);
+        });
+        
+        // Criar nova notificação
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Mostrar a notificação
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Remover a notificação após 3 segundos
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.contains(notification) && document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    /**
+     * Formata um valor para moeda brasileira
+     * @param {number} value - Valor a ser formatado
+     * @returns {string} - Valor formatado
+     */
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(value);
+    }
+    
+    /**
+     * Configura o menu mobile
+     */
+    function setupMobileMenu() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                
+                // Animação das barras do menu
+                const spans = menuToggle.querySelectorAll('span');
+                spans.forEach(span => span.classList.toggle('active'));
+            });
+            
+            // Fechar menu ao clicar em um link
+            const links = navLinks.querySelectorAll('a');
+            links.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                    const spans = menuToggle.querySelectorAll('span');
+                    spans.forEach(span => span.classList.remove('active'));
+                });
+            });
+        }
+    }
+    
+    /**
+     * Configura o formulário de contato
+     */
+    function setupContactForm() {
+        const contactForm = document.getElementById('contactForm');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                try {
+                    // Enviar mensagem para o Supabase
+                    const { data, error } = await supabase
+                        .from('mensagens')
+                        .insert([
+                            { 
+                                nome: name, 
+                                email: email, 
+                                assunto: subject, 
+                                mensagem: message,
+                                data_envio: new Date()
+                            }
+                        ]);
+                    
+                    if (error) throw error;
+                    
+                    // Limpar o formulário
+                    contactForm.reset();
+                    
+                    // Mostrar notificação de sucesso
+                    showNotification('Mensagem enviada com sucesso!', 'success');
+                    
+                } catch (error) {
+                    console.error('Erro ao enviar mensagem:', error);
+                    showNotification('Erro ao enviar mensagem. Tente novamente.', 'error');
+                }
+            });
+        }
+    }
+});
+
+// Estilização adicional para os elementos dinâmicos
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+        
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .product-actions .btn {
+            flex: 1;
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 10px 15px;
+        }
+        
+        .modal {
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            animation: slideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .menu-toggle span.active:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .menu-toggle span.active:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle span.active:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -8px);
+        }
+        
+        /* Modificação para melhorar a aparência dos cards */
+        .product-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 77, 0, 0.2);
+        }
+        
+        .product-price {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 15px 0;
+        }
+    `;
+    
+    document.head.appendChild(style);
+});
